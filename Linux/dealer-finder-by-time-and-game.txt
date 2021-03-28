@@ -1,0 +1,6 @@
+grep "$1" "$2"_Dealer_schedule | awk '{print fs, $1, $2, $3, $4}' > /03-student/lucky_duck_investigations/dealer_finder/blackjack_dealers 
+grep "$1" "$2"_Dealer_schedule | awk '{print fs, $1, $2, $5, $6}' > /03-student/lucky_duck_investigations/dealer_finder/roulette_dealers 
+grep "$1" "$2"_Dealer_schedule | awk '{print fs, $1, $2, $7, $8}' > /03-student/lucky_duck_investigations/dealer_finder/texasholdem_dealers
+cat /03-student/lucky_duck_investigations/dealer_finder/"$3"_dealers 
+
+

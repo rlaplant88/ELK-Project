@@ -41,6 +41,7 @@ _Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdow
 | Web-1                | Docker-DVWA (filebeat & metricbeat) | 10.0.0.5               | Linux (ubuntu 18.04) |
 | Web-2                | Docker-DVWA (filebeat & metricbeat) | 10.0.0.6               | Linux (ubuntu 18.04) |
 | ELK-Server           | ELK - Kibana                        | 10.1.0.4               | Linux (ubuntu 18.04) |
+| Web-Load-Balancer  | Load Balancer  | 13.64.135.191  | Linux (ubuntu 18.04  |)
 
 ### Access Policies
 
@@ -67,9 +68,16 @@ Ansible was used to automate configuration of the ELK machine. No configuration 
 - _The main advantage of using Ansible to configure the ELK machine is that it is easily replicated. You can write one Playbook and configure multiple machines through the use of a single command after initial set up._
 
 The playbook implements the following tasks:
-- _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
-- ...
-- ...
+- _Specifies a group of machines from the host file as well as the remote user for that machine_
+- _Installs the following services_
+  _docker.io_
+  _python3-pip_
+  _docker python module_
+- _Increase system memory_
+- _Download and Launch a docker ELK container over ports:
+  _5601:5601_
+  _9200:9200_
+  _5044:5044_
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
@@ -77,25 +85,36 @@ The following screenshot displays the result of running `docker ps` after succes
 
 ### Target Machines & Beats
 This ELK server is configured to monitor the following machines:
-- _TODO: List the IP addresses of the machines you are monitoring_
+- _Web-1 - 10.0.0.5_
+- _Web-2 - 10.0.0.6_
 
 We have installed the following Beats on these machines:
-- _TODO: Specify which Beats you successfully installed_
+- _We have installed Filebeat and Metric Beat onto the Web-1 and Web-2 machines and the logging information is being sent to the ELK-Server machine._
 
 These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs, which we use to track user logon events, etc._
+- _Filebeat collects and monitors log files_
+- _Metricbeat collects metrics and system statistics from the operating system and services running on the system_
 
 ### Using the Playbook
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
 - Copy the _____ file to _____.
-- Update the _____ file to include...
-- Run the playbook, and navigate to ____ to check that the installation worked as expected.
+- Update the configuration files to include the Private IP of the ELK-Server to the ElasticSearch and Kibana sections of the configuration file.
+- Run the playbook, and navigate to ELK-Server public IP address (http://104.41.130.227:5601/app/kibana) to check that the installation worked as expected.
 
-_TODO: Answer the following questions to fill in the blanks:_
-- _Which file is the playbook? Where do you copy it?_
-- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_
-- _Which URL do you navigate to in order to check that the ELK server is running?
 
-_As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
+
+The commands needed to run the Ansible configuration for the ELK-Server are:
+ssh azdmin@65.52.120.244
+sudo docker container list -a (locate your ansible container name {clever_dhawan})
+sudo docker start clever_dhawan
+sudo docker attach clever_dhawan
+sudo docker ps (to check to be sure the container is running)
+cd etc/etc/ansible
+ansible-playbook elk-docker.yml (configure the ELK-Server and starts the ELK container on the ELK-Server) wait a few minutes for the implementation of the ELK-Server 
+cd etc/ansible/roles
+ansible-playbook filebeat-playbook-webservers.yml (installs filebeat)
+ansible-playbook metricbeat.yml (installs metricbeat)
+open a new web browser (http://104.41.130.227:5601/app/kibana). This will bring up the Kibana Web Portal
+ 
